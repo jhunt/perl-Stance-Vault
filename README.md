@@ -40,7 +40,7 @@ Contributing
 
 This code is licensed MIT.  Enjoy.
 
-If you find a bug, please raise a [Github Issue][issues] first,
+If you find a bug, please raise a [GitHub Issue][issues] first,
 before submitting a PR.
 
 Happy Hacking!
