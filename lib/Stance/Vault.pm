@@ -176,4 +176,14 @@ sub kv_get {
 	return $self->get("/v1/secret/data/$path");
 }
 
+=head1 NAME
+
+Stance::Vault - A Perl Interface to Hashicorp Vault
+
+=head1 DESCRIPTION
+
+C<Stance::GitHub> provides an object-oriented interface to the Hashicorp Vault API.
+
+=end
+
 1;
