@@ -182,8 +182,71 @@ Stance::Vault - A Perl Interface to Hashicorp Vault
 
 =head1 DESCRIPTION
 
-C<Stance::GitHub> provides an object-oriented interface to the Hashicorp Vault API.
+C<Stance::Vault> provides an object-oriented interface to the Hashicorp Vault API.
 
-=end
+=head1 CONSTRUCTOR METHODS
+
+=head2 new
+
+    my $vault = Stance::Vault->new($VAULT_ADDR);
+
+Create a new Vault client object, pointed at the given remote Vault endpoint,
+which must be given as a full HTTP(S) URL, including non-standard ports.
+
+=head1 INSTANCE METHODS
+
+=head2 authenticate
+
+    $vault->authenticate(token => $TOKEN);
+
+Set authentication parameters for subsequent requests to the Vault API.
+Currently, only the C<token> authentication scheme is understood.
+
+Returns the client object itself, to allow (and encourage) chaining off
+of the C<new()> constructor:
+
+    my $c = Stance::Vault->new()->authenticate(token => $T);
+
+=head2 kv_get
+
+    my $secret = $vault->kv_get('secret/path/to/get')
+        or die $vault->last_error;
+
+Retrieves a secret from the Vault.  This will include metadata, and the
+Vault API framing; most of the time you'll be looking for attributes under
+the C<{data}{data}> subkeys:
+
+    my $secret = $vault->kv_get($path);
+    print "the password is: $secret->{data}{data}{password}\n";
+
+=head2 kv_set
+
+    $vault->kv_set('secret/path/to/set', \%attrs)
+        or die $vault->last_error;
+
+Writes a secret to the Vault, at the given path.  While in theory tou can
+set arbitrarily deep hashes, some tools expect flat, string-based hashes.
+
+=head2 debug
+
+    $vault->debug(1);
+
+Enables or disables debugging.  When debugging is enabled, HTTP
+requests and responses will be printed to standard error, to aide
+in troubleshooting efforts.
+
+=head2 last_error
+
+    die $vault->last_error;
+
+Whenever a logical failure (above the transport) occurs, the Vault
+client stores it for later retrieval.  This method retrieves the most
+recently encountered error.
+
+Note that intervening successes will not clear the error, so it's best
+to only rely on this method when another method has signaled failure
+(i.e. by returning C<undef> in place of an actual result.)
+
+=cut
 
 1;
